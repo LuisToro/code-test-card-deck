@@ -174,8 +174,83 @@ class CardDeck {
 //  Your code goes below this comment.
 /*------------------------------------------*/
 
+const handParams = {
+	cards: [],
+	suits: [],
+	ranks: [],
+	limit: null,
+	sorted: false,
+	params: false
+}
+
+function getParams() {
+
+	const params = new URLSearchParams(window.location.search);
+	handParams.cards = params.get('cards') ? params.get('cards').split(' ') : [];
+	handParams.suits = params.get('suits') ? params.get('suits').split(' ') : [];
+	handParams.ranks = params.get('ranks') ? Array.from(params.get('ranks').split(' '), Number): [];
+	handParams.limit = params.get('limit') ? Number( params.get('limit')) : null;
+	handParams.sorted = params.get('sorted') ? params.get('sorted') : null;
+	console.log(handParams.sorted);
+}
+
+function cardsFromParams() {
+	if (handParams.cards.length > 0 ) {
+		deck.filter('id', handParams.cards);
+		handParams.params = true;
+	}
+}
+
+function suitsFromParams() {
+	if (handParams.suits.length > 0 ) {
+		deck.filter('suit', handParams.suits);
+		handParams.params = true;
+	}
+}
+
+function ranksFromParams() {
+	if (handParams.ranks.length > 0) {
+		deck.filter('rank', handParams.ranks);
+		handParams.params = true;
+	}
+}
+
+function limitFromParams() {
+	if (handParams.limit !== null) {
+		deck.limit(handParams.limit);
+		handParams.params = true;
+	} 
+}
+
+function sortedFromParams() {
+	if(handParams.sorted !== null) {
+		if (handParams.sorted === 'asc') {
+			deck.sort();
+			handParams.params = true;
+		}
+		if (handParams.sorted === 'desc') {
+			deck.sort();
+			deck.possibleCards.reverse();
+			handParams.params = true;
+		};
+		
+	}
+}
+
+function drawFiltered() {
+	if (handParams.params === true) deck.drawFiltered();
+}
+
 // Create a new card deck.
 const deck = new CardDeck(".deck", ".hand");
 
+getParams();
+cardsFromParams();
+ranksFromParams();
+suitsFromParams();
+limitFromParams();
+sortedFromParams();
+drawFiltered();
+
 // Take a look at the deck object and its methods.
-console.log(deck);
+// console.log(deck);
